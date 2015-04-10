@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Golf where
-import Data.List (repeat, zip, zip3, group, sort, transpose, unlines, maximumBy)
+import Data.List (repeat, zip, zip3, group, sort, transpose, unlines, maximumBy, (\\))
 import Data.Ord (comparing)
 
 skips :: [a] -> [[a]]
@@ -14,11 +14,12 @@ localMaxima a = map (\(a, b, c) -> b) $ filter (\(a, b, c) -> a < b && b > c) $ 
 -- mauke on #haskell gave a much simpler solution: [ b | (a : b : c : _) <- tails xs, a < b && b > c ]
 
 histogram :: [Integer] -> String
-histogram = unlines . reverse . transpose . (f =<< g) . e 0 . freq
-    where f m                 = map (\(a,b) -> show a ++ "=" ++ replicate b '*' ++ replicate (m - b) ' ')
-          g                   = maximum . map snd
-          e i []              = map (\j -> (j, 0)) [i..9]
-          e i x@((a,b):xs)    = if i < a then (i, 0):e (i+1) x else (a, b):e (i+1) xs
-          freq a              = [(head x, length x) | x <- group $ sort a]
+histogram h = (unlines . reverse . transpose . f) freq
+    where f a     = map (\i -> show i ++ "=" ++ q i a) [0..9]
+          q i a   = case lookup i a of
+                      Nothing -> replicate m ' '
+                      Just n -> replicate n '*' ++ replicate (m-n) ' '
+          m       = maximum $ map snd freq
+          freq    = [(head x, length x) | x <- group $ sort h]
 
 -- frerich> srid: You could make 'freq' a bit more concise by defining 'freq = map (head &&& length ) . group . sort'
