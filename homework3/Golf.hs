@@ -14,12 +14,12 @@ localMaxima a = map (\(a, b, c) -> b) $ filter (\(a, b, c) -> a < b && b > c) $ 
 -- mauke on #haskell gave a much simpler solution: [ b | (a : b : c : _) <- tails xs, a < b && b > c ]
 
 histogram :: [Integer] -> String
-histogram = unlines . reverse . transpose . (f =<< g) . fill 0 . freq
+histogram = unlines . reverse . transpose . (f =<< g) . e 0 . freq
     where f m []              = []
           f m ((a,b):xs)      = (show a ++ "=" ++ replicate b '*' ++ replicate (m - b) ' '):f m xs
           g x                 = snd $ maximumBy (comparing snd) x
-          fill i []           = map (\j -> (j, 0)) [i..9]
-          fill i x@((a,b):xs) = if i < a then (i, 0):fill (i+1) x else (a, b):fill (i+1) xs
+          e i []              = map (\j -> (j, 0)) [i..9]
+          e i x@((a,b):xs)    = if i < a then (i, 0):e (i+1) x else (a, b):e (i+1) xs
           freq a              = [(head x, length x) | x <- group $ sort a]
 
 -- frerich> srid: You could make 'freq' a bit more concise by defining 'freq = map (head &&& length ) . group . sort'
