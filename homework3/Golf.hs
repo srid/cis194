@@ -1,5 +1,7 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Golf where
-import Data.List (repeat, zip, zip3)
+import Data.List (repeat, zip, zip3, group, sort, transpose, unlines, maximumBy)
+import Data.Ord (comparing)
 
 skips :: [a] -> [[a]]
 skips xs = foldr f ([] <$ xs) (zip [1..] xs)
@@ -10,3 +12,13 @@ skips xs = foldr f ([] <$ xs) (zip [1..] xs)
 localMaxima :: [Integer] -> [Integer]
 localMaxima a = map (\(a, b, c) -> b) $ filter (\(a, b, c) -> a < b && b > c) $ zip3 a (drop 1 a) $ drop 2 a
 -- mauke on #haskell gave a much simpler solution: [ b | (a : b : c : _) <- tails xs, a < b && b > c ]
+
+histogram :: [Integer] -> String
+histogram = unlines . reverse . transpose . (f =<< g) . fill 0 . freq
+    where f m [] = []
+          f m ((a,b):xs) = (show a ++ "=" ++ replicate b '*' ++ replicate (m - b) ' '):f m xs
+          g x = snd $ Data.List.maximumBy (comparing snd) x
+          fill i []     = map (\j -> (j, 0)) [i..9]
+          fill i x@((a,b):xs) = if i < a then (i, 0):fill (i+1) x else (a, b):fill (i+1) xs
+          freq a = [(head x, length x) | x <- group $ sort a]
+
