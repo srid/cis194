@@ -17,7 +17,7 @@ histogram :: [Integer] -> String
 histogram = unlines . reverse . transpose . (f =<< g) . e 0 . freq
     where f m []              = []
           f m ((a,b):xs)      = (show a ++ "=" ++ replicate b '*' ++ replicate (m - b) ' '):f m xs
-          g x                 = snd $ maximumBy (comparing snd) x
+          g                   = maximum . map snd
           e i []              = map (\j -> (j, 0)) [i..9]
           e i x@((a,b):xs)    = if i < a then (i, 0):e (i+1) x else (a, b):e (i+1) xs
           freq a              = [(head x, length x) | x <- group $ sort a]
