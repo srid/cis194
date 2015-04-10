@@ -15,10 +15,11 @@ localMaxima a = map (\(a, b, c) -> b) $ filter (\(a, b, c) -> a < b && b > c) $ 
 
 histogram :: [Integer] -> String
 histogram = unlines . reverse . transpose . (f =<< g) . fill 0 . freq
-    where f m [] = []
-          f m ((a,b):xs) = (show a ++ "=" ++ replicate b '*' ++ replicate (m - b) ' '):f m xs
-          g x = snd $ maximumBy (comparing snd) x
-          fill i []     = map (\j -> (j, 0)) [i..9]
+    where f m []              = []
+          f m ((a,b):xs)      = (show a ++ "=" ++ replicate b '*' ++ replicate (m - b) ' '):f m xs
+          g x                 = snd $ maximumBy (comparing snd) x
+          fill i []           = map (\j -> (j, 0)) [i..9]
           fill i x@((a,b):xs) = if i < a then (i, 0):fill (i+1) x else (a, b):fill (i+1) xs
-          freq a = [(head x, length x) | x <- group $ sort a]
+          freq a              = [(head x, length x) | x <- group $ sort a]
 
+-- frerich> srid: You could make 'freq' a bit more concise by defining 'freq = map (head &&& length ) . group . sort'
