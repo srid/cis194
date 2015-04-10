@@ -16,7 +16,7 @@ localMaxima a = map (\(a, b, c) -> b) $ filter (\(a, b, c) -> a < b && b > c) $ 
 histogram :: [Integer] -> String
 histogram h = (unlines . reverse . transpose . f) freq
     where f a     = map (\i -> show i ++ "=" ++ q i a) [0..9]
-          q i a   = maybe (replicate m ' ') (\n -> replicate n '*' ++ replicate (m-n) ' ') $ lookup i a
+          q i a   = let n = maybe 0 id $ lookup i a in replicate n '*' ++ replicate (m-n) ' '
           m       = maximum $ map snd freq
           freq    = [(head x, length x) | x <- group $ sort h]
 
