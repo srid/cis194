@@ -37,3 +37,13 @@ foldTree = foldl f Leaf where
         if h1 < h2 then
             let ins@(Node nh _ _ _) = (f left elem) in Node (maximum (h, nh+1)) ins v right else
             let ins@(Node nh _ _ _) = (f right elem) in Node (maximum (h, nh+1)) left v ins
+
+
+xor :: [Bool] -> Bool
+xor = foldl f False where
+    f True  = not
+    f False = id
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr f' [] where
+    f' x result = (f x):result
