@@ -1,4 +1,5 @@
 module Homework4 where
+import Data.List ((\\))    
 
 fun1 :: [Integer] -> Integer
 fun1 [] = 1
@@ -47,3 +48,17 @@ xor = foldl f False where
 map' :: (a -> b) -> [a] -> [b]
 map' f = foldr f' [] where
     f' x result = (f x):result
+
+
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram = map (\k -> 2*k + 1) . eliminate . enumerate
+                where enumerate n = [1..n]
+                      eliminate n = n \\ (sieves $ toInteger $ length n)
+                      sieves n = filter (<=n) $
+                                 map (\(x, y) -> x+y+2*x*y) $
+                                 filter (\(x, y) -> x <= y) $
+                                 cartProd [1..n] [1..n]
+
+cartProd :: [a] -> [b] -> [(a, b)]
+cartProd xs ys = [(x,y) | x <- xs, y <- ys]
+-- cartProd [1,2] [’a’,’b’] == [(1,’a’),(1,’b’),(2,’a’),(2,’b’)]
