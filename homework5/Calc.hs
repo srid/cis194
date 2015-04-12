@@ -12,3 +12,16 @@ evalStr = f . parseExp Lit Add Mul
           where f Nothing  = Nothing
                 f (Just e) = Just $ eval e
 
+
+class Expr a where
+    lit      :: Integral b => b -> a
+    add, mul :: a -> a -> a
+
+
+instance Expr ExprT where
+    lit x = Lit (toInteger x)
+    add x y = Add x y
+    mul x y = Mul x y
+
+reify :: ExprT -> ExprT
+reify = id              
