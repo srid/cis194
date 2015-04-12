@@ -53,9 +53,9 @@ map' f = foldr f' [] where
 sieveSundaram :: Integer -> [Integer]
 sieveSundaram = map (\k -> 2*k + 1) . eliminate . enumerate
                 where enumerate n = [1..n]
-                      eliminate n = n \\ (sieves $ toInteger $ length n)
-                      sieves n = filter (<=n) $
-                                 map (\(x, y) -> x+y+2*x*y) $
+                      eliminate a = a \\ (sieves . toInteger . length) a
+                      sieves n = filter (<=n) .
+                                 map (\(x, y) -> x+y+2*x*y) .
                                  filter (\(x, y) -> x <= y) $
                                  cartProd [1..n] [1..n]
 
