@@ -39,6 +39,9 @@ instance Expr LookupVar where
                   (Nothing, _) -> Nothing
                   (_, Nothing) -> Nothing
                   (Just a, Just b) -> Just (a * b)
+-- mauke from #haskell-beginners simplified the above as follows:
+-- mauke> I didn't use monads for the Expr instance but applicative
+-- mauke> instance Expr (M.Map String Integer -> Maybe Integer) where { lit = pure . pure; add = liftA2 (liftA2 (+)); mul = liftA2 (liftA2 (*)) }
 
 withVars :: [(String, Integer)]
          -> (M.Map String Integer -> Maybe Integer)
