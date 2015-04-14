@@ -19,20 +19,23 @@ tag (Single m _) = m
 tag (Append m _ _) = m
 
 
+-- We will use total nodes as the annotation. Thus leaf node has annotation value 1.                     
 indexJ :: (Sized b, Monoid b) =>
           Int -> JoinList b a -> Maybe a
 indexJ i (Single m a)
-    | inBounds i m   = Nothing
-    | otherwise      = Just a
+    | inSize i m   = Just a
+    | otherwise    = Nothing
 indexJ i (Append m jl1 jl2)
-    | inBounds i m   = Nothing
-    | otherwise      = let x = tag jl1 in
-                       case x of _
-                                     | inBounds i x -> indexJ i jl1
-                                     | otherwise    -> indexJ (i - (getSize $ size x)) jl2
+    | inSize i m   = let m1 = tag jl1 in
+                     case m1 of _
+                                    | inSize i m1  -> indexJ i jl1
+                                    | otherwise    -> indexJ (i - (getSize $ size m1)) jl2
+    | otherwise    = Nothing
 indexJ _ _ = Nothing
 
 
-inBounds :: (Sized a) =>
+inSize :: (Sized a) =>
             Int -> a -> Bool
-inBounds i sz = i <= (getSize $ size sz)
+inSize i sz = i < (getSize $ size sz)
+
+
