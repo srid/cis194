@@ -41,6 +41,7 @@ dropJ :: (Sized b, Monoid b) =>
 dropJ 0 jl            = jl
 dropJ n jl@(Append m l r)
       | n < size' l   = let l' = dropJ n l in
-                        Append (size' jl - n) l' r
+                        Append (tag l' <> tag r) l' r
       | otherwise     = dropJ (n - size' l) r
 dropJ _ _             = Empty
+
