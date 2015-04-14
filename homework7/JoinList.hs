@@ -70,20 +70,19 @@ partitionHalf s = let n = length s in
                     0 -> error "oopsie"
                     _ -> let m = div n 2 in
                          (take m s, drop m s)
-    
+
+scoreLine' s = Single ((scoreString s), 1) s
+              
 instance Buffer JoinListBuffer where
     toString Empty = ""
     toString (Single _ x) = x
     toString (Append _ l r) = toString l ++ toString r
 
-    fromString ""  = Empty
-    fromString [c] = Single (score c, 1) [c]
-    fromString s   = let (x, y) = partitionHalf s in
-                     fromString x +++ fromString y
+    fromString = foldr (+++) Empty . map scoreLine' . lines
 
     line = indexJ
 
-    replaceLine n s b = takeJ (n-1) b +++ fromString s +++ dropJ n b
+    replaceLine n s b = takeJ (n-1) b +++ fromString s +++ dropJ (n + 1) b
 
     numLines = getScore . fst . tag
 
