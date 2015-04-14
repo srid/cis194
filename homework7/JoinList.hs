@@ -82,7 +82,7 @@ instance Buffer JoinListBuffer where
 
     line = indexJ
 
-    replaceLine n s b = takeJ (n-1) b +++ fromString s +++ dropJ (n + 1) b
+    replaceLine n s b = takeJ n b +++ fromString s +++ dropJ (n + 1) b
 
     numLines = getScore . fst . tag
 
