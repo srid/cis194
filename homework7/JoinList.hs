@@ -20,7 +20,7 @@ tag (Append m _ _) = m
 
 
 instance Sized m => Sized (JoinList m a) where
-    size Empty = 0
+    size Empty = Size 0
     size (Single m _)   = size m
     size (Append m _ _) = size m
 
@@ -35,3 +35,12 @@ indexJ i (Append _ l r)
        | otherwise       = indexJ (i - size' l) r
 indexJ _ _               = Nothing
 
+
+dropJ :: (Sized b, Monoid b) =>
+         Int -> JoinList b a -> JoinList b a
+dropJ 0 jl            = jl
+dropJ n jl@(Append m l r)
+      | n < size' l   = let l' = dropJ n l in
+                        Append (size' jl - n) l' r
+      | otherwise     = dropJ (n - size' l) r
+dropJ _ _             = Empty
