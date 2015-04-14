@@ -5,6 +5,8 @@ import Data.Char (toUpper)
 newtype Score = Score Int
     deriving (Eq, Ord, Show, Num)
 
+getScore (Score s) = s
+             
 instance Monoid Score where
     mempty = 0
     mappend = (+)
