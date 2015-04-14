@@ -40,9 +40,7 @@ dropJ :: (Sized b, Monoid b) =>
          Int -> JoinList b a -> JoinList b a
 dropJ 0 jl            = jl
 dropJ n (Append m l r)
-      | n < size' l   = let l' = dropJ n l
-                            m' = tag l' <> tag r in
-                        Append m' l' r
+      | n < size' l   = (dropJ n l) +++ r
       | otherwise     = dropJ (n - size' l) r
 dropJ _ _             = Empty
 
@@ -52,7 +50,5 @@ takeJ :: (Sized b, Monoid b) =>
 takeJ 0 jl            = Empty
 takeJ n (Append m l r )
       | n < size' l   = takeJ n r
-      | otherwise     = let r' = takeJ (n - size' l) r
-                            m' = tag l <> tag r' in
-                        Append m' l r'
+      | otherwise     = l +++ takeJ (n - size' l) r
 takeJ _ jl            = jl
