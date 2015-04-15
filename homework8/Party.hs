@@ -1,6 +1,7 @@
 module Party where
 import Employee
-import Data.Monoid ((<>))    
+import Data.Monoid ((<>))
+import Data.Tree    
     
 glCons :: Employee -> GuestList -> GuestList
 glCons emp (GL emps fun) = GL (emp:emps) $ empFun emp + fun
@@ -13,3 +14,6 @@ moreFun :: GuestList -> GuestList -> GuestList
 moreFun gl1@(GL _ fun1) gl2@(GL _ fun2)
         | fun1 > fun2 = gl1
         | otherwise   = gl2
+
+treeFold :: (a -> [b] -> b) -> Tree a -> b
+treeFold f tree = (f (rootLabel tree) $ map (treeFold f) (subForest tree))
