@@ -17,3 +17,11 @@ moreFun gl1@(GL _ fun1) gl2@(GL _ fun2)
 
 treeFold :: (a -> [b] -> b) -> Tree a -> b
 treeFold f tree = (f (rootLabel tree) $ map (treeFold f) (subForest tree))
+
+nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
+nextLevel boss gls = let with    = glCons boss $ (mconcat . map snd) gls
+                         without = (mconcat . map fst) gls in
+                     (with, without)
+
+-- combineGLs :: Employee -> [GuestList] -> GuestList
+-- combineGLs boss optimalGLs = 
