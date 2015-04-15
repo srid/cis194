@@ -42,25 +42,27 @@ class Misty m where
   -- Relative Difficulty: 3
   -- (use banana and/or unicorn)
   furry' :: (a -> b) -> m a -> m b
-  furry' = error "todo"
+  furry' f = banana (unicorn . f)
 
 -- Exercise 7
 -- Relative Difficulty: 2
 instance Misty [] where
-  banana = error "todo"
-  unicorn = error "todo"
+  banana f = foldr (++) [] . map f
+  unicorn x = [x]
 
 -- Exercise 8
 -- Relative Difficulty: 2
 instance Misty Maybe where
-  banana = error "todo"
-  unicorn = error "todo"
+  banana f Nothing  = Nothing
+  banana f (Just x) = f x
+  unicorn x         = Just x
 
 -- Exercise 9
 -- Relative Difficulty: 6
 instance Misty ((->) t) where
-  banana = error "todo"
-  unicorn = error "todo"
+  -- (a -> t -> b) -> (t -> a) -> t -> b
+  banana f m x = (f . m) x x
+  unicorn = const
 
 -- Exercise 10
 -- Relative Difficulty: 6
