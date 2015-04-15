@@ -1,7 +1,8 @@
 module Party where
 import Employee
 import Data.Monoid ((<>))
-import Data.Tree    
+import Data.Tree
+import Data.List (sort)    
     
 glCons :: Employee -> GuestList -> GuestList
 glCons emp (GL emps fun) = GL (emp:emps) $ empFun emp + fun
@@ -23,5 +24,21 @@ nextLevel boss gls = let with    = glCons boss $ (mconcat . map snd) gls
                          without = (mconcat . map fst) gls in
                      (with, without)
 
--- combineGLs :: Employee -> [GuestList] -> GuestList
--- combineGLs boss optimalGLs = 
+maxFun :: Tree Employee -> GuestList
+maxFun = (uncurry max) . treeFold f where
+    f emp []      = (GL [emp] (empFun emp), GL [] 0)
+    f emp glPairs = nextLevel emp glPairs
+
+readEmployeeTree :: String -> Tree Employee
+readEmployeeTree = read
+                    
+main :: IO ()
+main = readFile "company.txt" >>= (printResult . maxFun . readEmployeeTree)
+
+
+printResult :: GuestList -> IO ()
+printResult (GL emps totalFun) = putStr "Total fun: " >> print totalFun >> printEmployees (sort $ map empName emps)
+
+printEmployees :: [String] -> IO ()
+printEmployees []     = putStr ""
+printEmployees (x:xs) = putStrLn x >> printEmployees xs
