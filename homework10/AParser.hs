@@ -72,3 +72,8 @@ instance Applicative Parser where
     g s = case f1 s of
             Nothing     -> Nothing
             Just (f, r) -> fmap (first f) (f2 r)
+
+abParser :: Parser (Char, Char)
+abParser = let aP = fmap (const $ const ('a', 'b')) (char 'a')
+               bP = char 'b'
+               in aP <*> bP
