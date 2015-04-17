@@ -74,7 +74,7 @@ instance Applicative Parser where
             Just (f, r) -> first f <$> f2 r
 
 abParser :: Parser (Char, Char)
-abParser = curry id <$> char 'a' <*> char 'b'
+abParser = (,) <$> char 'a' <*> char 'b'
 
 abParser_ :: Parser ()
 abParser_ = (\_ _ -> ()) <$> char 'a' <*> char 'b'
