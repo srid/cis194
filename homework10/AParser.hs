@@ -86,3 +86,9 @@ instance Alternative Parser where
   empty                       = Parser $ const Nothing
   (Parser p1) <|> (Parser p2) = Parser $ g where
           g s = p1 s <|> p2 s
+
+ignoringParser :: Parser a -> Parser ()
+ignoringParser p = (\_ -> ()) <$> p
+
+intOrUppercase :: Parser ()
+intOrUppercase = ignoringParser posInt <|> ignoringParser (satisfy isUpper)
