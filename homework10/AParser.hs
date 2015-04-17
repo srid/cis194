@@ -62,8 +62,8 @@ first :: (a -> b) -> (a,c) -> (b,c)
 first f (a, c) = (f a, c)
 
 instance Functor Parser where
-  fmap f (Parser runParser) = Parser g where
-    g = fmap (first f) . runParser
+  fmap f (Parser run) = Parser g where
+    g = fmap (first f) . run
 
 
 instance Applicative Parser where
@@ -71,9 +71,10 @@ instance Applicative Parser where
   (Parser f1) <*> (Parser f2) = Parser g where
     g s = case f1 s of
             Nothing     -> Nothing
-            Just (f, r) -> fmap (first f) (f2 r)
+            Just (f, r) -> first f <$> f2 r
 
 abParser :: Parser (Char, Char)
-abParser = let aP = fmap (const $ const ('a', 'b')) (char 'a')
-               bP = char 'b'
-               in aP <*> bP
+abParser = (const $ const ('a', 'b')) <$> char 'a' <*> char 'b'
+
+abParser_ :: Parser ()
+abParser_ = (const $ const ()) <$> char 'a' <*> char 'b'
