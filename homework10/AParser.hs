@@ -66,3 +66,11 @@ instance Functor Parser where
     g = fmap (first f) . runParser
 
 
+instance Applicative Parser where
+  pure x = Parser $ const $ Just (x, "")
+  (Parser f1) <*> (Parser f2) = Parser g where
+    g s = case f1 s of
+            Nothing     -> Nothing
+            Just (f, r) -> case f2 r of
+                                Nothing -> Nothing
+                                Just (a, r) -> Just (f a, r)
