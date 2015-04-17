@@ -74,7 +74,7 @@ instance Applicative Parser where
             Just (f, r) -> first f <$> f2 r
 
 abParser :: Parser (Char, Char)
-abParser = (const $ const ('a', 'b')) <$> char 'a' <*> char 'b'
+abParser = (\_ _ -> ('a', 'b')) <$> char 'a' <*> char 'b'
 
 abParser_ :: Parser ()
-abParser_ = (const $ const ()) <$> char 'a' <*> char 'b'
+abParser_ = (\_ _ -> ()) <$> char 'a' <*> char 'b'
