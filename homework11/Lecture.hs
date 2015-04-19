@@ -7,8 +7,8 @@ import Control.Applicative
 -- Can you implement the following functions? Consider what each function does when f is replaced with each of the above types.
 (*>)       :: Applicative f => f a -> f b -> f b
 mapA       :: Applicative f => (a -> f b) -> ([a] -> f [b])
--- sequenceA  :: Applicative f => [f a] -> f [a]
--- replicateA :: Applicative f => Int -> f a -> f [a]
+sequenceA  :: Applicative f => [f a] -> f [a]
+replicateA :: Applicative f => Int -> f a -> f [a]
 
 -- My solutions below:
 
@@ -22,3 +22,7 @@ readInt :: String -> Maybe [Int]
 readInt = Just . map (read . g) where
   g c = c:""
 
+sequenceA = foldr f (pure []) where
+  f fa fb = (:) <$> fa <*> fb
+
+replicateA n = fmap $ replicate n
